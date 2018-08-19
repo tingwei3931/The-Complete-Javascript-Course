@@ -1,0 +1,12 @@
+Event Bubbling and Event Delegation
+------------------------------------
+Event bubbling means that when an event is fired or triggered on some DOM element, then the exact same event is also triggered on all of the parent elements. The element that caused the event to happen, is called the target element.
+
+Event Delegation - attach an event handler to a parent element and wait for the event to bubble up, and we can then do whatever we intended to do with our target element.
+
+Use Cases for Event Delegation
+--------------------------------
+1. When we have an element with lots of child elements that we are interested in. In this case, instead of adding an event handler to all of these child elements, we simply add it to the parent element, and then determine on which child element the event was fired.
+
+2. The second use case for event delegation is when we want an event handler attached to an element that is not yet in the DOM when our page is loaded.
+That's, of course, because we cannot add an event handler to something that's not on our page.
