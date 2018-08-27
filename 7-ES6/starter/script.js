@@ -230,7 +230,7 @@ new Person('John').myFriends5(friends);
 
 // ES6
 Person.prototype.myFriends6 = function (friends) {
-    //this callback function does not have its own keyword, therefore it shares the lexical this keyword from surroundings which is this function that points back to the object
+    //this callback function does not have its own this keyword, therefore it shares the lexical this keyword from surroundings which is this function that points back to the object
     var arr = friends.map(el =>
         `${this.name} is friends with ${el}`);
     console.log(arr);
@@ -270,8 +270,8 @@ console.log(lastName66);
 
 //destructuring into different name that does not match with key names
 const {firstName66: a, lastName66: b} = obj;
-console.log(firstName66);
-console.log(lastName66);
+console.log(a);
+console.log(b);
 
 // A more practical example of destructuring
 // Return more than one value from a function. In ES5, usually will return an object.
@@ -423,3 +423,325 @@ function isFullAge6_2(limit, ...years) {
     years.forEach(cur=> console.log((2016 - cur) >= limit));
 }
 isFullAge6_2(16, 1990, 1999, 1965, 2016, 1987);
+
+////////////////////////////////////////
+// Lecture: Default parameters
+// Preset parameters when no arguments is supplied
+
+// ES5 
+function SmithPerson5(firstName, yearOfBirth, lastName, nationality) {
+    //simple ternary operator for default parameters. If it is undefined(ie. not supplied) simply assign to default value
+    lastName === undefined ? lastName = 'Smith' : lastName = lastName;
+    nationality === undefined ? nationality = 'american' : nationality = nationality;
+
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.yearOfBirth = yearOfBirth;
+    this.nationality = nationality;
+}
+
+//Javascript actually allows us to call any function without specifying all of the arguments. (It assigns undefined for parameters that are not supplied) 
+var john5 = new SmithPerson5('John', 1990);
+var emily5 = new SmithPerson5('Emily', 1983, 'Diaz', 'spanish'); //Diaz and spainish overrides the default value lastName and nationality
+
+
+// ES6
+// specify the default value of the parameters in function declaration
+function SmithPerson6(firstName, yearOfBirth, lastName = 'Smith', nationality = 'american') {
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.yearOfBirth = yearOfBirth;
+    this.nationality = nationality;
+}
+
+var john6 = new SmithPerson6('John', 1990);
+var emily6 = new SmithPerson6('Emily', 1983, 'Diaz', 'spanish'); 
+
+/////////////////////////////////////////////////////////////////////////////////
+// Lecture: Maps (new Data Stucture)
+// In Maps, we can use any primitive values like numbers, strings or Booleans for the keys, even functions and objects. Unlike objects, can only use string. 
+
+const question = new Map();
+//set() accepts a key-value pair
+question.set('question', 'What is the official name of the latest major JavaScript version?');
+question.set(1, 'ES5');
+question.set(2, 'ES6');
+question.set(3, 'ES2015'); //official name
+question.set(4, 'ES7'); //most current version but not official name
+question.set('correct', 3);
+question.set(true, 'Correct answer :D');
+question.set(false, 'Wrong, please try again!');
+
+//retrieve data from the map
+console.log(question.get('question'));
+//console.log(question.size); //gets the length of map
+
+//can use Map.has() to check whether an entry exists or not
+/*
+if(question.has(4)) {
+    //question.delete(4); //delete a key-value pair
+    console.log('Answer 4 is here');
+}
+question.delete(4); // Nothing happens if an entry gets deleted twice
+
+//delete all the elements from the map
+//question.clear();
+
+// Maps are iterable(can loop)
+// Callbacks has access to the value, key and the map itself
+question.forEach((value, key) => console.log(`This is ${key}, and it's set to ${value}`));
+*/
+
+// For-of loops in map
+// question.entries() return all entries
+// use destructuring to unpack the element into key and value 
+for(let [key, value] of question.entries()) {
+    //typeof() built-in javascript function
+    if(typeof(key) === 'number') {
+        console.log(`Answer ${key}: ${value}`);
+    }
+}
+
+const ans = parseInt(prompt("Write the correct answer"));
+console.log(question.get(ans === question.get('correct')));
+
+//Why maps are better to create hashmaps than objects?
+//1. can use anything as keys.
+//2. Maps are iterable but objects are not
+//3. can get the size easily using Map.size
+//4. can add and delete easily. 
+
+///////////////////////////////////////////
+// Lecture: Classes
+// Classes are called function constructors in ES5. Classes are syntatic sugar for function constructors.
+
+// ES5
+//This is written in function expression
+//Alternative is function declaration
+//Eg:
+//function Person5(yada, yada) { }
+var Person5 = function(name, yearOfBirth, job) {
+    this.name = name;
+    this.yearOfBirth = yearOfBirth;
+    this.job = job;
+}
+
+Person5.prototype.calculateAge = function() {
+    var age = new Date().getFullYear() - this.yearOfBirth;
+    console.log(age);
+}
+
+var john5 = new Person5('John', 1990, 'teacher');
+
+// ES6
+class Person6 {
+    // function constructor is replaced with class constructor
+    constructor(name, yearOfBirth, job) {
+        this.name = name;
+        this.yearOfBirth = yearOfBirth;
+        this.job = job;
+    }
+
+    calculateAge() {
+        var age = new Date().getFullYear() - this.yearOfBirth;
+        console.log(age);
+    }
+
+    static greeting() { 
+        console.log('Hey there!');
+    }
+}
+
+const john66 = new Person6('john', 1990, 'teacher');
+Person6.greeting();
+
+// IMPORTANT POINTS:
+// 1. Class definitions are not hoisted, so unlike function constructor, we need to implement a class and only later in our code start using it.
+// 2. Can only add methods to classes but not properties (unlike function constructors), however inheriting properties through the object instances is not a good practice.  
+
+/////////////////////////////////
+// Lecture: Classes and Subclasses (Inheritance)
+// ES5
+//Person5 is the superclass
+var Person5 = function(name, yearOfBirth, job) {
+    this.name = name;
+    this.yearOfBirth = yearOfBirth;
+    this.job = job;
+}
+
+Person5.prototype.calculateAge = function() {
+    var age = new Date().getFullYear() - this.yearOfBirth;
+    console.log(age);
+}
+
+var Athlete5 = function(name, yearOfBirth, job, olympicgames, medals) {
+    //calling superclass function constructor
+    //When creating a new athlete object, new creates a new empty object, calls the athlete function constructor and sets the this keyword to the newly create object. The this keyword below will point to the new empty Athlete object. 
+    Person5.call(this, name, yearOfBirth, job);
+    this.olympicgames = olympicgames;
+    this.medals = medals;
+}
+
+//Object.create allows us to manually set the prototype of an object and we want the prototype of the athelete to be the prototype of the Person (to connect them together)
+//Link together the prototype chain
+//Athlete5 inherits the prototype of Person5 and in turn gets access to the calculateAge() function that is inside the prototype property of Person5
+Athlete5.prototype = Object.create(Person5.prototype);
+
+Athlete5.prototype.wonMedal = function() {
+    this.medals++;
+    console.log(this.medals);
+}
+
+var johnAthlete5 = new Athlete5('john', 1990, 'swimmer', 3, 10);
+
+johnAthlete5.calculateAge(); //inherited from Person5
+johnAthlete5.wonMedal(); //Athlete own method
+
+// ES6
+class Person66 {
+    // function constructor is replaced with class constructor
+    constructor(name, yearOfBirth, job) {
+        this.name = name;
+        this.yearOfBirth = yearOfBirth;
+        this.job = job;
+    }
+
+    calculateAge() {
+        var age = new Date().getFullYear() - this.yearOfBirth;
+        console.log(age);
+    }
+}
+
+class Athlete66 extends Person66 {
+    constructor(name, yearOfBirth, job, olympicgames, medals) {
+        super(name, yearOfBirth,job);
+        this.olympicgames = olympicgames;
+        this.medals = medals;
+    }
+
+    wonMedal(){
+        this.medals++;
+        console.log(this.medals);
+    }
+}
+
+const johnAthlete6 = new Athlete66('John', 1990, 'swimmer', 3, 10);
+
+johnAthlete6.wonMedal();
+johnAthlete6.calculateAge();
+
+/////////////////////////////////
+// CODING CHALLENGE
+
+/*
+
+Suppose that you're working in a small town administration, and you're in charge of two town elements:
+1. Parks
+2. Streets
+
+It's a very small town, so right now there are only 3 parks and 4 streets. All parks and streets have a name and a build year.
+
+At an end-of-year meeting, your boss wants a final report with the following:
+1. Tree density of each park in the town (forumla: number of trees/park area)
+2. Average age of each town's park (forumla: sum of all ages/number of parks)
+3. The name of the park that has more than 1000 trees
+4. Total and average length of the town's streets
+5. Size classification of all streets: tiny/small/normal/big/huge. If the size is unknown, the default is normal
+
+All the report data should be printed to the console.
+
+HINT: Use some of the ES6 features: classes, subclasses, template strings, default parameters, maps, arrow functions, destructuring, etc.
+
+*/
+
+class Element {
+    constructor(name, buildYear) {
+        this.name = name;
+        this.buildYear = buildYear;
+    }
+}
+
+class Park extends Element {
+    constructor(name, buildYear, numTrees, parkArea) {
+        super(name, buildYear);
+        this.numTrees = numTrees;
+        this.parkArea = parkArea; //in km2 unit
+    }
+
+    calcTreeDensity() {
+        const density = this.numTrees / this.parkArea;
+        console.log(`Park ${this.name} has a tree density of ${density} trees per square km. `);
+    }
+}
+
+class Street extends Element {
+    constructor(name, buildYear, length, size = 3) {
+        super(name, buildYear);
+        this.length = length;
+        this.size = size;
+    }
+
+    //classify according to size using hashmaps
+    classifyStreet() {
+        const classification = new Map();
+        classification.set(1, 'tiny');
+        classification.set(2, 'small');
+        classification.set(3, 'normal');
+        classification.set(4, 'big');
+        classification.set(5, 'huge');
+        console.log(`Street ${this.name}, build in ${this.buildYear} is a ${classification.get(this.size)} street `);
+    }
+}
+
+let allParks = [new Park('1', 1987, 0.2, 215),
+             new Park('2', 1894, 3541, 2.9),
+             new Park('3', 1953, 1001, 0.4)];
+
+let allStreets = [new Street("A", 1493, 1.1, 4),
+               new Street("B", 2008, 2.7, 2), //using default parameter
+               new Street("C", 2009, 0.8, 4),
+               new Street("D", 1997, 0.12, 1)];
+
+function reportParks(p) {
+    console.log(`-------PARKS REPORT--------------`);
+    //Density
+    console.log('1. Tree Density');
+    p.forEach(cur => cur.calcTreeDensity());
+
+    //Average Age
+    console.log('2. Average age of parks');
+    // Generate an array of all the ages before calculating the average
+    const ages = p.map(cur => new Date().getFullYear() - cur.buildYear);
+    const [totalAge, avgAge] = calc(ages);
+    console.log(`The average age of the parks is ${avgAge} years.`);
+    
+    //More than 1000 trees
+    console.log('3. Park that has more than 1000 trees');   
+    //function chaining
+    //Problem: findIndex only finds the first element that satisfies the callback function not ALL
+    //Solution: use array.filter()
+    //const index = p.map(cur => cur.numTrees).findIndex(cur => cur >= 1000);
+    p.filter(cur => cur.numTrees >= 1000).forEach(cur => console.log(`Park ${cur.name} has more than 1000 trees.`));
+}
+
+function calc(arr) {
+    //New method: reduce() (ES5 methods)
+    //have access to the current value and the current index, but also the previous value 
+    const sum = arr.reduce((prev, cur, index) => prev + cur, 0); //0: the initial value of the accumulator
+
+    // using destructuring to return two values 
+    return [sum, sum / arr.length];
+}
+
+function reportStreets(s) {
+    console.log(`-------STREETS REPORT--------------`);
+
+    //Total and average length of the town's streets
+    const [totalLength, avgLength] = calc(s.map(el => el.length));
+    console.log(`Our ${s.length} streets have a total length of ${totalLength} km, with an average of ${avgLength} km.`);
+    // Classifiy by size
+    s.forEach(el => el.classifyStreet()); 
+}
+
+reportParks(allParks);
+reportStreets(allStreets);
