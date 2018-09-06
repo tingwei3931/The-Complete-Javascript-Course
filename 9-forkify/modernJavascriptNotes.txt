@@ -1,0 +1,31 @@
+Compile ES6 codes down to ES5
+Use module bundlers, task runners external packages, etc. 
+
+Node.js and npm ecosystem
+-------------------------
+- can find all kinds of third party open source tools and libraries and frameworks needed for modern web development. (React, Angular, Lodash)
+
+Npm manages these packages. 
+
+Package examples:
+Babel - converts ES6, ES7 or even ES8 (ES6 onwards are collectively called as ESNext), back to ES5 so that all browsers are capable of understanding our code. 
+
+Webpack - make our code more modular and easier to maintain by separating the different parts of our app into different files. However, browsers cannot really support this functionality yet (modules). Need to bundle these modules together into a single file using module bundler called Webpack.
+
+Command Line Interface Crash Course (WINDOWS)
+DIR - view files that are in a directory
+cd - Change the current directory that you are in 
+Press the tab button to autocomplete the directory path 
+cd .. - move a folder above
+cls - Clear the prompt
+mkdir - make a new directory 
+copy NUL filename - create a new file with the name 'filename'
+copy - copy a file to another location (creates a new copy)
+move - move a file to another location (does not create a new copy)
+del - delete a file (permanent copy)
+rmdir /S test - recursively remove the directory 'test'
+start - open a file 
+
+
+// npm install package-name --save-dev
+--save-dev means to save it as a development dependency of our project
