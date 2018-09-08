@@ -672,3 +672,7 @@ body {
   opacity: 1;
   visibility: visible;
 }
+
+.list__btn--delete {
+  margin: 45px 5px 45px 5px;
+}

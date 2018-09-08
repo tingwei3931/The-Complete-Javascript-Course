@@ -1,6 +1,4 @@
 // Putting stuff that are reusable
-
-
 export const elementStrings = {
     loader: 'loader',
     searchInput: '.search__field',
@@ -8,7 +6,11 @@ export const elementStrings = {
     resultList: '.results__list',
     searchRes: '.results',
     resultPages: '.results__pages',
-    recipe: '.recipe'
+    recipe: '.recipe',
+    shoppingList: '.shopping__list',
+    likesField: '.likes__field',
+    likesList: '.likes__list',
+    shopping: '.shopping'
 }
 
 // All DOM Elements will be stored here
@@ -18,7 +20,12 @@ export const elements = {
     resultList: document.querySelector(`${elementStrings.resultList}`),
     searchRes: document.querySelector(`${elementStrings.searchRes}`),
     resultPages: document.querySelector(`${elementStrings.resultPages}`),
-    recipe: document.querySelector(`${elementStrings.recipe}`)
+    recipe: document.querySelector(`${elementStrings.recipe}`),
+    shoppingList: document.querySelector(`${elementStrings.shoppingList}`),
+    likesMenu: document.querySelector(`${elementStrings.likesField}`),
+    likesList: document.querySelector(`${elementStrings.likesList}`),
+    shopping: document.querySelector(`${elementStrings.shopping}`),
+
 };
 
 

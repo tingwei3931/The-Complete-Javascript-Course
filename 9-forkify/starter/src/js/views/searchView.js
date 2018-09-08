@@ -78,7 +78,7 @@ export const clearInput = () => {
 };
 
 // Truncates the recipe title
-const recipeTitle = (title, limit = 17) => {
+export const recipeTitle = (title, limit = 17) => {
     const newTitle = []; // adding stuff to a new array is not mutating the array itself so const is ok
     if(title.length > limit) {
         title.split(' ').reduce((acc, cur) => {
@@ -110,10 +110,10 @@ export const highlightSelected = id => {
 
     // Clear all the highlights before highlighting a new one
     // The Array.from() method creates a new, shallow-copied Array instance from an array-like or iterable object.
-    const resultsArr = Array.from(document.querySelector('.results__link'));
+    const resultsArr = Array.from(document.querySelectorAll('.results__link'));
     resultsArr.forEach(el => el.classList.remove('results__link--active'));
     
     // Highlight the selected recipe 
     // can query based on CSS
-    document.querySelector(`a[href*="#${id}"]`).classList.add('results__link--active');
+    document.querySelector(`.results__link[href*="#${id}"]`).classList.add('results__link--active');
 }

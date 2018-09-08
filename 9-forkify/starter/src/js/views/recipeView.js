@@ -1,9 +1,5 @@
-import {
-    elements
-} from "./base";
-import {
-    Fraction
-} from "fractional";
+import { elements } from "./base";
+import { Fraction } from "fractional";
 
 export const clearRecipe = () => {
     elements.recipe.innerHTML = '';
@@ -13,19 +9,25 @@ const formatCount = count => {
     if (count) {
         // count = 2.5 --> 2 1/2
         // count = 0.5 --> 1/2
-        const [int, dec] = count.toString().split('.').map(el => parseInt(el, 10)); // [2, 5]
+        // Problem: fractional cannot deal with recurring decimals. (e.g. 1/3 = 0.3333...) so we will round up the numbers here
+        // The Math.round() function returns the value of a number rounded to the nearest integer.
+        // Eg: 0.333333... --> 3333.33... --> after rounding --> 3333 ---> divide by 10000 ---> 0.3333
+        // Round to the nearest 4 decimal place
+        const newCount = Math.round(count * 100) / 100;
+        // Eg: 0.3333 -> "0.3333"(String) -> ['0', '3333'] -> [0, 3333] 
+        const [int, dec] = newCount.toString().split('.').map(el => parseInt(el, 10)); // [2, 5]
 
         // no decimal 
         if (!dec) {
-            return count;
+            return newCount;
         }
 
         //for cases like 0.5
         if (int === 0) {
-            const fr = new Fraction(count); // 
+            const fr = new Fraction(newCount); 
             return `${fr.numerator}/${fr.denominator}`;
         } else { //both integer and decimal present
-            const fr = new Fraction(count - int); //this will take the decimal part (eg: 0.5 from 2.5)
+            const fr = new Fraction(newCount - int); //this will take the decimal part (eg: 0.5 from 2.5)
             return `${int} ${fr.numerator}/${fr.denominator}`; // convert the 0.5 to 1/2 then combine back to the 2
         }
     }
@@ -46,7 +48,7 @@ const createIngredient = ingredient => `
 `;
 
 
-export const renderRecipe = recipe => {
+export const renderRecipe = (recipe, isLiked) => {
     const markup = `
     <figure class="recipe__fig">
         <img src="${recipe.img}" alt="${recipe.title}" class="recipe__img">
@@ -85,7 +87,7 @@ export const renderRecipe = recipe => {
         </div>
         <button class="recipe__love">
             <svg class="header__likes">
-                <use href="img/icons.svg#icon-heart-outlined"></use>
+                <use href="img/icons.svg#icon-heart${isLiked ? '' : '-outlined'}"></use>
             </svg>
         </button>
     </div>
@@ -97,7 +99,7 @@ export const renderRecipe = recipe => {
             ${ recipe.ingredients.map(createIngredient).join('')}
         </ul>
 
-        <button class="btn-small recipe__btn">
+        <button class="btn-small recipe__btn  recipe__btn--add">
             <svg class="search__icon">
                 <use href="img/icons.svg#icon-shopping-cart"></use>
             </svg>
